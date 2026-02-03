@@ -62,16 +62,31 @@ Routes are populated from three sources that can be combined:
 2. Kubernetes: watches Services with `mc-router.itzg.me/externalServerName` annotation
 3. Docker/Swarm: watches containers with `mc-router.host` label
 
-### Key Dependencies
+### Global Singletons
 
-- `sirupsen/logrus` — Logging
-- `k8s.io/client-go` — Kubernetes client
-- `github.com/docker/docker` — Docker client
-- `github.com/gorilla/mux` — HTTP routing (API server)
-- `github.com/prometheus/client_golang` — Prometheus metrics
-- `golang.ngrok.com/ngrok` — ngrok tunnel integration
-- `github.com/stretchr/testify` — Test assertions
+Several package-level singletons must be initialized before use:
+- `server.Routes` — Initialized at package load via `NewRoutes()`
+- `server.DownScaler` — Initialized in `NewServer()`; **must exist before route operations that involve auto-scaling**
+- `server.RoutesConfigLoader` — Zero-value struct, configured via `Load()`
+
+In tests, you must initialize `DownScaler` manually if testing route/scaling behavior:
+```go
+DownScaler = NewDownScaler(context.Background(), false, 1*time.Second)
+```
+
+### Server Address Normalization
+
+`FindBackendForServerAddress()` in `routes.go` normalizes incoming hostnames before route lookup. The normalization chain strips, in order: Forge mod suffixes (`\x00`), infinity-filter suffixes (`\\`), DNS trailing dots, TCPShield patterns, and optionally simplifies SRV records. This is critical to understand when debugging route matching issues.
+
+### Code Conventions
+
+- Logging: `sirupsen/logrus` with structured fields (`logrus.WithField(...).Info(...)`)
+- Error wrapping: older code uses `pkg/errors` (`errors.Wrap`), newer code uses `fmt.Errorf` with `%w`
+- Interfaces: some prefixed with `I` (`IRoutes`, `IDownScaler`) and some not (`RouteFinder`, `ConnectionNotifier`)
+- Tests are in the same package (not `_test` suffix), enabling access to unexported types
+- Test fixtures for protocol packets are `.hex` files in `mcproto/`
+- Testify `mock.Mock` is used for interface mocking (see `MockedRoutesHandler` in `k8s_test.go`)
 
 ### Protocol Notes
 
-The `mcproto` package handles Minecraft Java protocol quirks: Forge mod identifiers appended to server addresses (separated by `\x00`), DNS root zone trailing dots, legacy server list ping format, and VarInt encoding. Server address matching in routes strips these suffixes before lookup.
+The `mcproto` package handles Minecraft Java protocol quirks: Forge mod identifiers appended to server addresses (separated by `\x00`), DNS root zone trailing dots, legacy server list ping format, and VarInt encoding. Server address matching in routes strips these suffixes before lookup. Login packet decoding varies by protocol version (1.18.2 has no UUID, 1.19–1.19.2 has optional UUID with signature data, 1.20.2+ always includes UUID).

@@ -5,7 +5,7 @@ metadata:
   name: mc-router-dev
 build:
   artifacts:
-  - image: itzg/mc-router-dev
+  - image: ghcr.io/cpfarhood/mc-router-dev
     # https://skaffold.dev/docs/pipeline-stages/builders/ko/
     ko:
       main: ./cmd/mc-router/

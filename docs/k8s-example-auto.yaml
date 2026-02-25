@@ -63,7 +63,7 @@ spec:
     spec:
       serviceAccountName: mc-router
       containers:
-      - image: itzg/mc-router:latest
+      - image: ghcr.io/cpfarhood/mc-router:latest
         name: mc-router
         args: ["--api-binding", ":8080", "--in-kube-cluster"]
         ports:

@@ -1,6 +1,6 @@
 ## Fork Notice
 
-This is a fork of [itzg/mc-router](https://github.com/itzg/mc-router), maintained for internal use. It includes additional features such as the `proxyServerName` Kubernetes annotation for decoupling routing hostnames from scaling targets, concurrency fixes for scale-down operations, and a Gitea Actions CI/CD pipeline.
+This is a fork of [itzg/mc-router](https://github.com/itzg/mc-router), maintained for internal use. It includes additional features such as the `proxyServerName` Kubernetes annotation for decoupling routing hostnames from scaling targets, concurrency fixes for scale-down operations, and a GitHub Actions CI/CD pipeline.
 
 The original project is licensed under the [MIT License](LICENSE.txt), copyright (c) 2018-2025 Geoff Bourne.
 
@@ -147,7 +147,7 @@ Some other features included:
 
 ## Docker Multi-Architecture Image
 
-The [multi-architecture image published at Docker Hub](https://hub.docker.com/repository/docker/itzg/mc-router) supports amd64, arm64, and arm32v6 (i.e. RaspberryPi).
+The multi-architecture image published at [GitHub Container Registry](https://github.com/cpfarhood/mc-router/pkgs/container/mc-router) supports amd64, arm64, and arm32v6 (i.e. RaspberryPi).
 
 ## Docker Compose Usage
 
@@ -165,7 +165,7 @@ services:
       EULA: "TRUE"
       TYPE: FORGE
   router:
-    image: ${MC_ROUTER_IMAGE:-itzg/mc-router}
+    image: ${MC_ROUTER_IMAGE:-ghcr.io/cpfarhood/mc-router}
     depends_on:
       - forge
       - vanilla
@@ -220,7 +220,7 @@ To use scale-to-zero with Docker containers:
   docker run --rm \
     -p 25565:25565 \
     -v /var/run/docker.sock:/var/run/docker.sock:ro \
-    itzg/mc-router \
+    ghcr.io/cpfarhood/mc-router \
     -in-docker -auto-scale-up -auto-scale-down -auto-scale-down-after=10m
   ```
 
@@ -318,7 +318,7 @@ By default, the router will watch all namespaces for those services; however, a 
 For example, start `mc-router`'s container spec with
 
 ```yaml
-image: itzg/mc-router
+image: ghcr.io/cpfarhood/mc-router
 name: mc-router
 args: ["--in-kube-cluster"]
 ```
@@ -393,7 +393,7 @@ For the port it will look in `spec.ports` for a port named `mc-router`, if not p
   `"mc-router.itzg.me/externalServerName"` annotation that declares their external server name(s)
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/itzg/mc-router/main/docs/k8s-example-auto.yaml
+kubectl apply -f https://raw.githubusercontent.com/cpfarhood/mc-router/main/docs/k8s-example-auto.yaml
 ```
 
 ![](docs/example-deployment-auto.drawio.png)
@@ -544,7 +544,7 @@ services:
       - mc-data:/data
     # No port mapping since mc-router connects over compose network
   router:
-    image: itzg/mc-router
+    image: ghcr.io/cpfarhood/mc-router
     environment:
       DEFAULT: mc:25565
       NGROK_TOKEN: ${NGROK_TOKEN}

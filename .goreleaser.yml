@@ -3,7 +3,7 @@ version: 2
 project_name: mc-router
 release:
   github:
-    owner: itzg
+    owner: cpfarhood
     name: mc-router
 before:
   hooks:
@@ -38,8 +38,7 @@ archives:
       - README*
 dockers_v2:
   - images:
-      - "itzg/{{ .ProjectName }}"
-      - "ghcr.io/itzg/{{ .ProjectName }}"
+      - "ghcr.io/cpfarhood/{{ .ProjectName }}"
     dockerfile: Dockerfile.release  
     platforms:
       - linux/amd64
@@ -49,7 +48,7 @@ dockers_v2:
       - "{{ .Version }}"
       - "latest"
     labels:
-      org.opencontainers.image.authors: "Geoff Bourne <itzgeoff@gmail.com>"
+      org.opencontainers.image.authors: "cpfarhood"
       org.opencontainers.image.title: "mc-router"
       org.opencontainers.image.description: "Routes Minecraft Java Edition client connections to backend servers based upon the requested server address."
       org.opencontainers.image.source: "{{ .GitURL }}"

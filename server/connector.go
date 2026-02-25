@@ -15,7 +15,7 @@ import (
 	"golang.ngrok.com/ngrok"
 	"golang.ngrok.com/ngrok/config"
 
-	"github.com/itzg/mc-router/mcproto"
+	"github.com/cpfarhood/mc-router/mcproto"
 	"github.com/juju/ratelimit"
 	"github.com/pires/go-proxyproto"
 	"github.com/sirupsen/logrus"

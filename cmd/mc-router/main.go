@@ -9,7 +9,7 @@ import (
 	"syscall"
 
 	"github.com/itzg/go-flagsfiller"
-	"github.com/itzg/mc-router/server"
+	"github.com/cpfarhood/mc-router/server"
 	"github.com/sirupsen/logrus"
 )
 
